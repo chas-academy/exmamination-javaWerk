@@ -6,12 +6,44 @@ const HTMLexpenseBtn = document.getElementById("expenseBtn");
 
 const HTMLincomeList = document.getElementById("incomeList");
 const HTMLexpenseList = document.getElementById("expenseList");
-const HTMLtransactionList = document.getElementById("transactionList");
 
 const HTMLbalance = document.getElementById("balance");
 
 let balance = 0;
-let incomeList = [];
+
+let transactionlist = [];
+let transactionObject = {};
+
+
+
+function saldo(transactionlist){
+
+    let balance = 0;
+    HTMLdescription.value = "";
+    HTMLdescription.placeholder = "Ex: Mat, Hyra";
+    HTMLamount.value = "";
+    HTMLamount.placeholder = "Ex: 500";
+    HTMLincomeList.innerText = "";
+    HTMLexpenseList.innerText = "";
+
+    for (curIncome of transactionlist){
+        
+        let curType = curIncome.description;
+        let curAmount = curIncome.amount;
+        console.log(curType + curAmount);
+        if (curIncome.type === "income"){
+            HTMLincomeList.innerHTML = HTMLincomeList.innerHTML + (curType + " - " + curAmount + " kr<br>");
+            balance = ( curAmount + balance);
+        }
+        if (curIncome.type === "expense"){
+            HTMLexpenseList.innerHTML = HTMLexpenseList.innerHTML + (curType + " - " + curAmount + " kr<br>");
+            balance = ( balance - curAmount);
+        }
+
+        HTMLbalance.innerText = (balance);
+    }
+}
+
 
 
 HTMLincomeBtn.addEventListener("click", () => {
@@ -20,23 +52,21 @@ HTMLincomeBtn.addEventListener("click", () => {
 
     if (isNaN(amountInput) != true ){
 
-        balance = ( amountInput + balance);
-        HTMLbalance.innerText = (balance);
-
         let incomeType = HTMLdescription.value;
-        
-        //incomeList.push(incomeType + " - " + amountInput + " kr");
-        HTMLincomeList.innerHTML = HTMLincomeList.innerHTML + (incomeType + " - " + amountInput + " kr<br>");
-        //document.getElementById("desc").innerText = "Ex: Mat, Hyra";
-        
+
+        //Skapa ett nytt transaktionsobjekt, t.ex. { description, amount, type }, där:
+        //type kan vara "income" eller "expense" beroende på knappval.
+        transactionObject = {"description":incomeType,"amount":amountInput,"type":"income"};
+        transactionlist.push(transactionObject);
+        console.log(transactionlist);
+                
     }
 
-    HTMLdescription.value = "";
-    HTMLdescription.placeholder = "Ex: Mat, Hyra";
-    HTMLamount.value = "";
-    HTMLamount.placeholder = "Ex: 500";
+    saldo(transactionlist);
 
 });
+
+
 
 HTMLexpenseBtn.addEventListener("click", () => {
 
@@ -44,20 +74,17 @@ HTMLexpenseBtn.addEventListener("click", () => {
 
     if (isNaN(amountInput) != true ){
 
-        balance = ( balance - amountInput);
-        HTMLbalance.innerText = (balance);
-
         let expenseType = HTMLdescription.value;
-        
-        //incomeList.push(expenseType + " - " + amountInput + " kr");
-        HTMLexpenseList.innerHTML = HTMLexpenseList.innerHTML + (expenseType + " - " + amountInput + " kr<br>");
-        
+
+        //Skapa ett nytt transaktionsobjekt, t.ex. { description, amount, type }, där:
+        //type kan vara "income" eller "expense" beroende på knappval.
+        transactionObject = {"description":expenseType,"amount":amountInput,"type":"expense"};
+        transactionlist.push(transactionObject);
+        console.log(transactionlist);
+                
     }
 
-    HTMLdescription.value = "";
-    HTMLdescription.placeholder = "Ex: Mat, Hyra";
-    HTMLamount.value = "";
-    HTMLamount.placeholder = "Ex: 500";
+    saldo(transactionlist);
     
 });
 
